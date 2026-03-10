@@ -1,0 +1,872 @@
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FatooraReady — UAE E-Invoicing Compliance</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #c8a040;
+  --gold-light: #e8c870;
+  --gold-pale: #faf5e8;
+  --navy: #0e1a2b;
+  --navy-mid: #1a2e47;
+  --ink: #1a1a1a;
+  --muted: #7a7a7a;
+  --border: #e4ddd0;
+  --bg: #fdfaf5;
+  --white: #ffffff;
+  --red: #c0392b;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 300;
+  background: var(--bg);
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 52px; height: 68px;
+  background: rgba(253,250,245,0.95);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  animation: slideDown .5s ease;
+}
+@keyframes slideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: none; opacity: 1; } }
+
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px; font-weight: 600; color: var(--navy);
+  text-decoration: none;
+}
+.nav-logo .logo-mark {
+  width: 32px; height: 32px;
+  background: var(--navy);
+  display: flex; align-items: center; justify-content: center;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+.nav-logo .logo-mark span {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px; font-weight: 600; color: var(--gold); line-height: 1;
+}
+
+.nav-links {
+  display: flex; gap: 36px; list-style: none;
+}
+.nav-links a {
+  font-size: 13px; font-weight: 400; color: var(--muted);
+  text-decoration: none; letter-spacing: .03em; transition: color .2s;
+}
+.nav-links a:hover { color: var(--navy); }
+
+.nav-cta {
+  display: flex; gap: 12px; align-items: center;
+}
+.btn-ghost {
+  padding: 9px 22px; font-size: 13px; font-weight: 500;
+  border: 1.5px solid var(--border); color: var(--navy);
+  background: transparent; cursor: pointer; transition: .2s;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.btn-ghost:hover { border-color: var(--navy); }
+.btn-primary {
+  padding: 9px 22px; font-size: 13px; font-weight: 500;
+  background: var(--navy); color: #fff; border: none; cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif; transition: .2s;
+}
+.btn-primary:hover { background: var(--navy-mid); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: grid; grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 120px 52px 80px;
+  gap: 80px;
+  position: relative; overflow: hidden;
+}
+
+.hero-geo {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+}
+.hero-geo svg { position: absolute; top: -100px; right: -80px; opacity: .06; }
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 14px;
+  border: 1px solid var(--gold);
+  background: rgba(200,160,64,.06);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--gold); letter-spacing: .12em;
+  text-transform: uppercase; margin-bottom: 28px;
+}
+.hero-badge .pulse {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .4; transform: scale(.8); }
+}
+
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(44px, 4.5vw, 68px);
+  font-weight: 300; line-height: 1.1;
+  letter-spacing: -.01em; margin-bottom: 24px;
+  color: var(--navy);
+}
+.hero h1 em { font-style: italic; color: var(--gold); }
+
+.hero-sub {
+  font-size: 16px; line-height: 1.85; color: var(--muted);
+  max-width: 480px; margin-bottom: 40px;
+}
+
+.hero-actions { display: flex; align-items: center; gap: 16px; margin-bottom: 52px; }
+
+.btn-lg {
+  padding: 14px 32px; font-size: 14px; font-weight: 500;
+  background: var(--navy); color: #fff; border: none;
+  cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: .2s; display: flex; align-items: center; gap: 8px;
+}
+.btn-lg:hover { background: var(--navy-mid); }
+.btn-lg-outline {
+  padding: 14px 32px; font-size: 14px; font-weight: 500;
+  border: 1.5px solid var(--border); color: var(--navy);
+  background: transparent; cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif; transition: .2s;
+}
+.btn-lg-outline:hover { border-color: var(--navy); }
+
+.hero-trust {
+  display: flex; align-items: center; gap: 20px;
+}
+.hero-trust-item {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 12.5px; color: var(--muted);
+}
+.hero-trust-item svg { color: var(--gold); }
+
+/* Hero visual */
+.hero-visual {
+  position: relative;
+  animation: floatIn .8s ease .2s both;
+}
+@keyframes floatIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: none; } }
+
+.invoice-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  box-shadow: 0 24px 80px rgba(14,26,43,.1), 0 4px 20px rgba(14,26,43,.06);
+  padding: 36px;
+  position: relative;
+}
+
+.inv-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding-bottom: 24px; border-bottom: 2px solid var(--navy);
+  margin-bottom: 24px;
+}
+.inv-company { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--navy); }
+.inv-sub { font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace; margin-top: 4px; }
+.inv-badge {
+  padding: 5px 12px; background: #e8f5e8;
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: #2a7a3b; letter-spacing: .1em; border: 1px solid #b8ddb8;
+}
+
+.inv-meta {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;
+}
+.inv-meta-item {}
+.inv-meta-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.inv-meta-val { font-size: 13px; font-weight: 400; color: var(--ink); }
+
+.inv-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+.inv-table th {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+  text-align: left; font-weight: 400;
+}
+.inv-table th:last-child { text-align: right; }
+.inv-table td { padding: 10px 0; font-size: 12.5px; border-bottom: 1px solid var(--border); color: var(--ink); }
+.inv-table td:last-child { text-align: right; }
+
+.inv-totals { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.inv-total-row { display: flex; gap: 40px; font-size: 12.5px; color: var(--muted); }
+.inv-total-row.grand { font-size: 16px; font-weight: 600; color: var(--navy); margin-top: 6px; padding-top: 12px; border-top: 2px solid var(--navy); }
+
+.inv-stamp {
+  position: absolute; bottom: 36px; left: 36px;
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  color: var(--muted); letter-spacing: .08em; line-height: 1.8;
+}
+
+.inv-qr {
+  position: absolute; bottom: 36px; right: 36px;
+  width: 52px; height: 52px;
+  background: var(--navy); display: grid;
+  grid-template-columns: repeat(7,1fr); gap: 2px; padding: 6px;
+}
+.qr-cell { background: var(--white); }
+.qr-cell.dark { background: var(--navy); }
+
+/* Floating label */
+.hero-visual-badge {
+  position: absolute; top: -16px; right: -16px;
+  padding: 10px 16px;
+  background: var(--gold); color: var(--navy);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: .12em; font-weight: 400;
+  animation: wobble 4s ease-in-out infinite;
+}
+@keyframes wobble {
+  0%, 100% { transform: rotate(-1deg); }
+  50% { transform: rotate(1deg); }
+}
+
+/* ── TRUST BAR ── */
+.trust-bar {
+  background: var(--navy); padding: 20px 52px;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  flex-wrap: wrap;
+}
+.trust-item {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: rgba(255,255,255,.6);
+}
+.trust-item strong { color: #fff; font-weight: 500; }
+.trust-divider { width: 1px; height: 24px; background: rgba(255,255,255,.12); }
+
+/* ── SECTIONS ── */
+section { padding: 96px 52px; }
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 12px;
+}
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(34px, 3vw, 52px); font-weight: 300;
+  line-height: 1.15; color: var(--navy); margin-bottom: 16px;
+}
+.section-sub { font-size: 16px; color: var(--muted); max-width: 520px; line-height: 1.8; }
+
+/* ── PROBLEM ── */
+.problem { background: var(--navy); color: var(--white); }
+.problem .section-label { color: var(--gold); }
+.problem .section-title { color: var(--white); }
+.problem .section-sub { color: rgba(255,255,255,.5); }
+
+.problem-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+  align-items: center; margin-top: 64px;
+}
+
+.fine-card {
+  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1);
+  padding: 36px;
+}
+.fine-amount {
+  font-family: 'Cormorant Garamond', serif; font-size: 64px; font-weight: 300;
+  color: var(--gold); line-height: 1; margin-bottom: 8px;
+}
+.fine-label { font-size: 13px; color: rgba(255,255,255,.5); margin-bottom: 24px; }
+.fine-list { list-style: none; }
+.fine-list li {
+  font-size: 14px; color: rgba(255,255,255,.7); padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.fine-list li::before { content: '—'; color: var(--gold); flex-shrink: 0; }
+
+.problem-points { display: flex; flex-direction: column; gap: 28px; }
+.pp {
+  padding: 28px; border-left: 3px solid rgba(255,255,255,.1);
+  transition: border-color .3s;
+}
+.pp:hover { border-color: var(--gold); }
+.pp-title { font-size: 16px; font-weight: 500; margin-bottom: 8px; color: #fff; }
+.pp-body { font-size: 14px; color: rgba(255,255,255,.5); line-height: 1.7; }
+
+/* ── FEATURES ── */
+.features-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--border);
+  border: 1px solid var(--border);
+  margin-top: 64px;
+}
+.feature {
+  background: var(--white); padding: 40px 32px;
+  transition: background .2s;
+}
+.feature:hover { background: var(--gold-pale); }
+.feature-icon {
+  width: 44px; height: 44px;
+  background: var(--navy); display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px;
+}
+.feature-icon svg { color: var(--gold); }
+.feature-name { font-size: 16px; font-weight: 500; color: var(--navy); margin-bottom: 10px; }
+.feature-desc { font-size: 14px; color: var(--muted); line-height: 1.75; }
+
+/* ── HOW IT WORKS ── */
+.hiw { background: var(--gold-pale); }
+
+.steps {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 40px; margin-top: 64px; position: relative;
+}
+.steps::before {
+  content: '';
+  position: absolute; top: 28px; left: calc(12.5% + 20px); right: calc(12.5% + 20px);
+  height: 1px; background: var(--border);
+}
+.step { text-align: center; }
+.step-num {
+  width: 56px; height: 56px;
+  background: var(--navy);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--gold);
+  position: relative; z-index: 1;
+}
+.step-title { font-size: 15px; font-weight: 500; color: var(--navy); margin-bottom: 8px; }
+.step-desc { font-size: 13.5px; color: var(--muted); line-height: 1.7; }
+
+/* ── PRICING ── */
+.pricing-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 24px; margin-top: 64px;
+}
+.price-card {
+  border: 1.5px solid var(--border); padding: 40px 32px;
+  background: var(--white); position: relative;
+  transition: transform .2s, box-shadow .2s;
+}
+.price-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(14,26,43,.1); }
+.price-card.featured {
+  border-color: var(--navy); background: var(--navy);
+}
+.price-pop {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  padding: 4px 14px; background: var(--gold);
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--navy); letter-spacing: .1em; white-space: nowrap;
+}
+.price-tier {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  letter-spacing: .15em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 16px;
+}
+.price-card.featured .price-tier { color: rgba(255,255,255,.5); }
+.price-amount {
+  font-family: 'Cormorant Garamond', serif; font-size: 52px;
+  font-weight: 300; line-height: 1; color: var(--navy); margin-bottom: 4px;
+}
+.price-card.featured .price-amount { color: var(--gold); }
+.price-period { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+.price-card.featured .price-period { color: rgba(255,255,255,.4); }
+.price-features { list-style: none; margin-bottom: 32px; }
+.price-features li {
+  font-size: 14px; color: var(--ink); padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+}
+.price-card.featured .price-features li { color: rgba(255,255,255,.8); border-color: rgba(255,255,255,.1); }
+.price-features li::before { content: '✓'; color: var(--gold); font-weight: 600; flex-shrink: 0; }
+.price-btn {
+  width: 100%; padding: 13px; font-size: 14px; font-weight: 500;
+  cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
+  border: 1.5px solid var(--navy); background: transparent; color: var(--navy); transition: .2s;
+}
+.price-btn:hover { background: var(--navy); color: #fff; }
+.price-card.featured .price-btn { background: var(--gold); border-color: var(--gold); color: var(--navy); }
+.price-card.featured .price-btn:hover { background: var(--gold-light); }
+
+/* ── CTA ── */
+.cta-section {
+  background: var(--navy);
+  text-align: center; padding: 100px 52px;
+  position: relative; overflow: hidden;
+}
+.cta-geo {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 80% at 50% 100%, rgba(200,160,64,.12) 0%, transparent 70%);
+}
+.cta-section h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(40px, 4vw, 64px); font-weight: 300;
+  color: #fff; line-height: 1.15; margin-bottom: 16px;
+}
+.cta-section h2 em { color: var(--gold); font-style: italic; }
+.cta-section p { font-size: 16px; color: rgba(255,255,255,.5); margin-bottom: 40px; }
+.cta-form {
+  display: flex; gap: 12px; justify-content: center; max-width: 480px; margin: 0 auto 24px;
+}
+.cta-input {
+  flex: 1; padding: 14px 18px; font-size: 14px;
+  border: 1px solid rgba(255,255,255,.15); background: rgba(255,255,255,.06);
+  color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; outline: none;
+}
+.cta-input::placeholder { color: rgba(255,255,255,.3); }
+.cta-note { font-size: 12px; color: rgba(255,255,255,.3); }
+
+/* ── FOOTER ── */
+footer {
+  background: #08111e; padding: 60px 52px 32px;
+}
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px; padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,.08);
+  margin-bottom: 32px;
+}
+.footer-brand-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px; font-weight: 600; color: #fff; margin-bottom: 12px;
+}
+.footer-tagline { font-size: 13.5px; color: rgba(255,255,255,.35); line-height: 1.7; max-width: 240px; margin-bottom: 20px; }
+.footer-compliance {
+  display: inline-block; padding: 5px 12px;
+  border: 1px solid rgba(200,160,64,.3);
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--gold); letter-spacing: .1em;
+}
+.footer-col-title {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  letter-spacing: .15em; text-transform: uppercase;
+  color: rgba(255,255,255,.3); margin-bottom: 16px;
+}
+.footer-links { list-style: none; }
+.footer-links li { margin-bottom: 10px; }
+.footer-links a { font-size: 13.5px; color: rgba(255,255,255,.45); text-decoration: none; transition: color .2s; }
+.footer-links a:hover { color: #fff; }
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; }
+.footer-legal { font-size: 12px; color: rgba(255,255,255,.2); }
+
+/* Scroll animations */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.in { opacity: 1; transform: none; }
+
+@media(max-width:900px) {
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .hero { grid-template-columns: 1fr; padding: 100px 20px 60px; gap: 40px; }
+  section { padding: 64px 20px; }
+  .problem-grid, .features-grid, .steps { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .trust-bar { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="logo-mark"><span>ف</span></div>
+    FatooraReady
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How it Works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <div class="nav-cta">
+    <button class="btn-ghost">Sign In</button>
+    <button class="btn-primary">Start Free Trial →</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-geo">
+    <svg width="600" height="600" viewBox="0 0 600 600" fill="none">
+      <polygon points="300,0 600,150 600,450 300,600 0,450 0,150" stroke="#c8a040" stroke-width="1" fill="none"/>
+      <polygon points="300,60 540,180 540,420 300,540 60,420 60,180" stroke="#c8a040" stroke-width="0.5" fill="none"/>
+      <polygon points="300,120 480,210 480,390 300,480 120,390 120,210" stroke="#c8a040" stroke-width="0.3" fill="none"/>
+    </svg>
+  </div>
+
+  <div>
+    <div class="hero-badge">
+      <span class="pulse"></span>
+      UAE E-Invoicing Mandate · 2026
+    </div>
+    <h1>
+      Issue UAE-compliant<br>
+      e-invoices in<br>
+      <em>under 2 minutes.</em>
+    </h1>
+    <p class="hero-sub">
+      FatooraReady generates PEPPOL/XML structured invoices, handles FTA submission, and prepares your VAT returns — before the mandate makes non-compliance a AED 500,000 mistake.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-lg">Start Free — 3 months <span>→</span></button>
+      <button class="btn-lg-outline">See live demo</button>
+    </div>
+    <div class="hero-trust">
+      <div class="hero-trust-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+        FTA-aligned
+      </div>
+      <div class="hero-trust-item" style="margin-left:16px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+        PEPPOL compliant
+      </div>
+      <div class="hero-trust-item" style="margin-left:16px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+        Arabic &amp; English
+      </div>
+    </div>
+  </div>
+
+  <!-- INVOICE PREVIEW -->
+  <div class="hero-visual">
+    <div class="hero-visual-badge">PEPPOL / UBL 2.1 ✓</div>
+    <div class="invoice-card">
+      <div class="inv-header">
+        <div>
+          <div class="inv-company">Al Rashid Trading LLC</div>
+          <div class="inv-sub">TRN: 100345678900003 · DMCC</div>
+        </div>
+        <div class="inv-badge">SUBMITTED ✓</div>
+      </div>
+      <div class="inv-meta">
+        <div class="inv-meta-item">
+          <div class="inv-meta-label">Invoice No.</div>
+          <div class="inv-meta-val">INV-2026-00142</div>
+        </div>
+        <div class="inv-meta-item">
+          <div class="inv-meta-label">Issue Date</div>
+          <div class="inv-meta-val">09 March 2026</div>
+        </div>
+        <div class="inv-meta-item">
+          <div class="inv-meta-label">Bill To</div>
+          <div class="inv-meta-val">Emirates Tech FZE</div>
+        </div>
+        <div class="inv-meta-item">
+          <div class="inv-meta-label">Due Date</div>
+          <div class="inv-meta-val">09 April 2026</div>
+        </div>
+      </div>
+      <table class="inv-table">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Qty</th>
+            <th>Unit Price</th>
+            <th>VAT 5%</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>IT Consulting Services</td>
+            <td>10</td>
+            <td>AED 1,200</td>
+            <td>AED 600</td>
+            <td>AED 12,600</td>
+          </tr>
+          <tr>
+            <td>Software Licenses (Q1)</td>
+            <td>3</td>
+            <td>AED 800</td>
+            <td>AED 120</td>
+            <td>AED 2,520</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="inv-totals">
+        <div class="inv-total-row"><span>Subtotal</span><span>AED 14,400</span></div>
+        <div class="inv-total-row"><span>VAT (5%)</span><span>AED 720</span></div>
+        <div class="inv-total-row grand"><span>Total Due</span><span>AED 15,120</span></div>
+      </div>
+      <div class="inv-stamp">
+        HASH: 3a9f2c8b…<br>
+        UUID: 550e8400-e29b…<br>
+        FTA Cleared · 09/03/2026
+      </div>
+      <!-- Mini QR representation -->
+      <div class="inv-qr">
+        <div class="qr-cell dark"></div><div class="qr-cell dark"></div><div class="qr-cell dark"></div><div class="qr-cell"></div><div class="qr-cell dark"></div><div class="qr-cell"></div><div class="qr-cell dark"></div>
+        <div class="qr-cell dark"></div><div class="qr-cell"></div><div class="qr-cell dark"></div><div class="qr-cell dark"></div><div class="qr-cell"></div><div class="qr-cell dark"></div><div class="qr-cell dark"></div>
+        <div class="qr-cell dark"></div><div class="qr-cell dark"></div><div class="qr-cell"></div><div class="qr-cell dark"></div><div class="qr-cell dark"></div><div class="qr-cell"></div><div class="qr-cell dark"></div>
+        <div class="qr-cell"></div><div class="qr-cell dark"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell"></div><div class="qr-cell dark"></div><div class="qr-cell"></div>
+        <div class="qr-cell dark"></div><div class="qr-cell"></div><div class="qr-cell dark"></div><div class="qr-cell dark"></div><div class="qr-cell dark"></div><div class="qr-cell"></div><div class="qr-cell dark"></div>
+        <div class="qr-cell dark"></div><div class="qr-cell dark"></div><div class="qr-cell"></div><div class="qr-cell dark"></div><div class="qr-cell"></div><div class="qr-cell dark"></div><div class="qr-cell dark"></div>
+        <div class="qr-cell dark"></div><div class="qr-cell"></div><div class="qr-cell dark"></div><div class="qr-cell"></div><div class="qr-cell dark"></div><div class="qr-cell dark"></div><div class="qr-cell dark"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><strong>350,000+</strong> UAE VAT-registered businesses must comply</div>
+  <div class="trust-divider"></div>
+  <div class="trust-item">Fines up to <strong>AED 500,000</strong> for non-compliance</div>
+  <div class="trust-divider"></div>
+  <div class="trust-item">Mandate enforcement starts <strong>2026</strong></div>
+  <div class="trust-divider"></div>
+  <div class="trust-item">PDF invoices will be <strong>invalid</strong> under new law</div>
+</div>
+
+<!-- PROBLEM -->
+<section class="problem" id="problem">
+  <div class="section-label">The Problem</div>
+  <div class="section-title">Your PDF invoice will<br>become illegal.</div>
+  <div class="section-sub">The UAE is enforcing Fatoora — mandatory structured e-invoicing. Every invoice must be a PEPPOL-compliant XML file cleared by the FTA in real time. Most businesses have no idea how to do this.</div>
+
+  <div class="problem-grid reveal">
+    <div class="fine-card">
+      <div class="fine-amount">AED 500K</div>
+      <div class="fine-label">Maximum fine for non-compliant invoicing</div>
+      <ul class="fine-list">
+        <li>Issuing a PDF invoice instead of PEPPOL XML</li>
+        <li>Failing to transmit invoices to FTA in real time</li>
+        <li>Missing mandatory fields (UUID, hash, QR code)</li>
+        <li>Not archiving e-invoices for 5 years in approved format</li>
+        <li>Late VAT filing due to incorrect invoice records</li>
+      </ul>
+    </div>
+    <div class="problem-points">
+      <div class="pp">
+        <div class="pp-title">ERP systems cost AED 50,000+ to implement</div>
+        <div class="pp-body">SAP, Oracle, and Microsoft Dynamics all support Fatoora — if you have a 6-month implementation budget and a dedicated IT team.</div>
+      </div>
+      <div class="pp">
+        <div class="pp-title">Zoho and QuickBooks aren't UAE-localised yet</div>
+        <div class="pp-body">Popular SME accounting tools have not yet released PEPPOL modules specific to UAE FTA requirements. You can't wait for them.</div>
+      </div>
+      <div class="pp">
+        <div class="pp-title">Consultants charge AED 5,000–20,000 per setup</div>
+        <div class="pp-body">Compliance consultants will set you up once — but every invoice you issue, every VAT period, every format change is back on you.</div>
+      </div>
+      <div class="pp">
+        <div class="pp-title">The deadline doesn't move</div>
+        <div class="pp-body">Cabinet Resolution No. (106) of 2025 is in effect. Phased rollout by business size is already underway. Your phase date may be sooner than you think.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-label">Features</div>
+  <div class="section-title">Everything you need.<br>Nothing you don't.</div>
+  <div class="section-sub">Built for UAE SMEs who need to be compliant today — not enterprises who can wait 6 months for an ERP rollout.</div>
+
+  <div class="features-grid reveal">
+    <div class="feature">
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      </div>
+      <div class="feature-name">E-Invoice Generator</div>
+      <div class="feature-desc">Create PEPPOL UBL 2.1 compliant invoices with a form as simple as writing an email. UUID, hash, and QR code generated automatically.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <div class="feature-name">FTA Real-Time Submission</div>
+      <div class="feature-desc">One click sends your invoice to the FTA clearance API and returns a stamped, cleared invoice ready to send to your buyer.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div class="feature-name">VAT Calendar & Filing Prep</div>
+      <div class="feature-desc">Automated output VAT summary per period. Pre-fills your EmaraTax VAT return so filing takes minutes, not a full day.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <div class="feature-name">Buyer Portal & WhatsApp Send</div>
+      <div class="feature-desc">Your buyer receives a clean invoice link by email or WhatsApp — the way business is actually done in the UAE.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div class="feature-name">Compliance Deadline Alerts</div>
+      <div class="feature-desc">Never miss a VAT return, trade license renewal, or document expiry. Personalized deadline calendar synced to your business profile.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <div class="feature-name">Accountant Multi-Client Mode</div>
+      <div class="feature-desc">Manage up to 50 client companies from one dashboard. White-label reports. Billed per company, not per seat.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="hiw" id="how">
+  <div class="section-label">How it Works</div>
+  <div class="section-title">From signup to<br>FTA-cleared in 10 minutes.</div>
+  <div class="steps reveal">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-title">Set Up Your Company</div>
+      <div class="step-desc">Enter your TRN, trade license, and free zone. We auto-validate your VAT registration with EmaraTax.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-title">Add Products & Buyers</div>
+      <div class="step-desc">Build your product/service catalog once. Save your frequent buyers. Both reusable across every invoice.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-title">Generate Your Invoice</div>
+      <div class="step-desc">Select items, buyer, and date. FatooraReady generates the PEPPOL XML, hash, UUID, and QR code automatically.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-title">Submit & Send</div>
+      <div class="step-desc">One click clears with the FTA. The stamped invoice is delivered to your buyer by email or WhatsApp instantly.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-label">Pricing</div>
+  <div class="section-title">Priced for SMEs,<br>not enterprises.</div>
+  <div class="section-sub">No setup fees. No annual contracts. Cancel anytime. Start free for 3 months.</div>
+
+  <div class="pricing-grid reveal">
+    <div class="price-card">
+      <div class="price-tier">Starter</div>
+      <div class="price-amount">AED 99</div>
+      <div class="price-period">per month · 1 company</div>
+      <ul class="price-features">
+        <li>Up to 100 invoices/month</li>
+        <li>PEPPOL XML generation</li>
+        <li>FTA submission (when live)</li>
+        <li>PDF + email delivery</li>
+        <li>VAT summary dashboard</li>
+        <li>Compliance deadline alerts</li>
+      </ul>
+      <button class="price-btn">Start Free Trial</button>
+    </div>
+    <div class="price-card featured">
+      <div class="price-pop">MOST POPULAR</div>
+      <div class="price-tier">Business</div>
+      <div class="price-amount">AED 249</div>
+      <div class="price-period">per month · 1 company</div>
+      <ul class="price-features">
+        <li>Unlimited invoices</li>
+        <li>WhatsApp invoice delivery</li>
+        <li>Buyer portal (accept/dispute)</li>
+        <li>VAT return pre-fill export</li>
+        <li>Credit note & debit note</li>
+        <li>5-year archive (FTA req.)</li>
+        <li>Priority support</li>
+      </ul>
+      <button class="price-btn">Start Free Trial</button>
+    </div>
+    <div class="price-card">
+      <div class="price-tier">Accountant</div>
+      <div class="price-amount">AED 799</div>
+      <div class="price-period">per month · up to 20 companies</div>
+      <ul class="price-features">
+        <li>All Business features</li>
+        <li>Multi-client dashboard</li>
+        <li>White-label invoice PDFs</li>
+        <li>Bulk invoice upload (CSV)</li>
+        <li>Client compliance reports</li>
+        <li>Dedicated account manager</li>
+      </ul>
+      <button class="price-btn">Start Free Trial</button>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-geo"></div>
+  <div class="section-label" style="color:var(--gold);justify-content:center;display:flex">Get Compliant Now</div>
+  <h2>The mandate is coming.<br><em>Be ready.</em></h2>
+  <p>Join 1,400+ UAE businesses already preparing with FatooraReady.<br>Free for 3 months. No credit card required.</p>
+  <div class="cta-form">
+    <input class="cta-input" type="email" placeholder="your@company.ae">
+    <button class="btn-primary" style="padding:14px 28px;font-size:14px;white-space:nowrap">Get Early Access →</button>
+  </div>
+  <div class="cta-note">Arabic &amp; English · DMCC, DIFC, JAFZA, ADGM, Mainland — all supported</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-name">FatooraReady</div>
+      <p class="footer-tagline">UAE's simplest e-invoicing compliance platform. Built for the Fatoora mandate.</p>
+      <div class="footer-compliance">FTA-ALIGNED · PEPPOL UBL 2.1</div>
+    </div>
+    <div>
+      <div class="footer-col-title">Product</div>
+      <ul class="footer-links">
+        <li><a href="#">Features</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">Accountant Portal</a></li>
+        <li><a href="#">API Docs</a></li>
+        <li><a href="#">Changelog</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Resources</div>
+      <ul class="footer-links">
+        <li><a href="#">Fatoora Guide</a></li>
+        <li><a href="#">VAT Help Centre</a></li>
+        <li><a href="#">Free Zone Index</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Webinars</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Company</div>
+      <ul class="footer-links">
+        <li><a href="#">About</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">حساب جديد</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-legal">© 2026 FatooraReady. All rights reserved. Dubai, UAE.</div>
+    <div class="footer-legal">Not a licensed tax advisor. For compliance guidance only.</div>
+  </div>
+</footer>
+
+<script>
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
