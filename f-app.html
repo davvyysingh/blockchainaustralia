@@ -1,0 +1,1673 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FatooraReady — App</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #c8a040;
+  --gold-light: #e8c870;
+  --gold-pale: #fdf8ee;
+  --navy: #0e1a2b;
+  --navy-mid: #1a2e47;
+  --navy-light: #243d5c;
+  --ink: #1a1a1a;
+  --muted: #7a7a7a;
+  --border: #e4ddd0;
+  --border-light: #f0ebe0;
+  --bg: #fdfaf5;
+  --white: #ffffff;
+  --success: #1a7a3c;
+  --success-bg: #e8f5ed;
+  --error: #c0392b;
+  --sidebar-w: 240px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 300;
+  background: var(--bg);
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+/* ══════════════════════════════════
+   SCREEN SYSTEM
+══════════════════════════════════ */
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: flex; }
+
+/* ══════════════════════════════════
+   ONBOARDING SCREENS (1–3)
+══════════════════════════════════ */
+.onboard-layout {
+  width: 100%; min-height: 100vh;
+  display: grid; grid-template-columns: 420px 1fr;
+}
+
+.onboard-left {
+  background: var(--navy); padding: 48px 48px;
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+}
+
+.ob-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px; font-weight: 600; color: #fff;
+  text-decoration: none; margin-bottom: 56px;
+}
+.ob-logo-mark {
+  width: 34px; height: 34px; background: var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+.ob-logo-mark span {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px; font-weight: 600; color: var(--navy);
+}
+
+.ob-steps { flex: 1; display: flex; flex-direction: column; gap: 0; }
+.ob-step {
+  display: flex; align-items: flex-start; gap: 16px; padding: 20px 0;
+  border-left: 2px solid rgba(255,255,255,.1); padding-left: 24px; margin-left: 14px;
+  position: relative; cursor: pointer;
+}
+.ob-step:last-child { border-left-color: transparent; }
+.ob-step-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.2);
+  background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  position: absolute; left: -15px; top: 20px;
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; color: rgba(255,255,255,.4);
+  transition: all .3s; flex-shrink: 0;
+}
+.ob-step.done .ob-step-dot { background: var(--gold); border-color: var(--gold); color: var(--navy); }
+.ob-step.active .ob-step-dot { background: var(--gold); border-color: var(--gold); color: var(--navy); box-shadow: 0 0 0 4px rgba(200,160,64,.2); }
+.ob-step-info {}
+.ob-step-label {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,255,255,.3); margin-bottom: 3px;
+}
+.ob-step.active .ob-step-label { color: var(--gold); }
+.ob-step.done .ob-step-label { color: rgba(255,255,255,.4); }
+.ob-step-name {
+  font-size: 15px; font-weight: 400; color: rgba(255,255,255,.4);
+}
+.ob-step.active .ob-step-name { color: #fff; }
+.ob-step.done .ob-step-name { color: rgba(255,255,255,.5); }
+
+.ob-left-footer {
+  border-top: 1px solid rgba(255,255,255,.1); padding-top: 24px;
+  font-size: 12px; color: rgba(255,255,255,.3); line-height: 1.7;
+}
+.ob-left-footer strong { color: var(--gold); font-weight: 400; }
+
+.onboard-right {
+  padding: 60px 64px; display: flex; flex-direction: column;
+  max-width: 640px;
+}
+
+.ob-progress {
+  height: 2px; background: var(--border); margin-bottom: 52px; border-radius: 2px;
+}
+.ob-progress-fill {
+  height: 100%; background: var(--gold); border-radius: 2px;
+  transition: width .5s ease;
+}
+
+.ob-eyebrow {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--gold);
+  margin-bottom: 12px;
+}
+.ob-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 38px; font-weight: 300; line-height: 1.15;
+  color: var(--navy); margin-bottom: 8px;
+}
+.ob-sub {
+  font-size: 14.5px; color: var(--muted); margin-bottom: 40px; line-height: 1.7;
+}
+
+.form-group { margin-bottom: 24px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-label {
+  display: block; font-size: 12px; font-weight: 500;
+  color: var(--navy); margin-bottom: 8px; letter-spacing: .03em;
+}
+.form-label .req { color: var(--gold); margin-left: 3px; }
+.form-input, .form-select, .form-textarea {
+  width: 100%; padding: 11px 14px; font-size: 14px;
+  border: 1.5px solid var(--border); background: var(--white);
+  color: var(--ink); font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: border-color .2s; outline: none;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--navy);
+}
+.form-input.valid { border-color: var(--success); }
+.form-hint { font-size: 11.5px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+.form-textarea { resize: vertical; min-height: 80px; }
+
+.trn-row {
+  display: flex; gap: 0; border: 1.5px solid var(--border);
+  overflow: hidden; transition: border-color .2s;
+}
+.trn-row:focus-within { border-color: var(--navy); }
+.trn-prefix {
+  padding: 11px 14px; background: var(--bg);
+  font-family: 'JetBrains Mono', monospace; font-size: 13px;
+  color: var(--muted); border-right: 1px solid var(--border);
+  white-space: nowrap;
+}
+.trn-row input { border: none; flex: 1; padding: 11px 14px; outline: none; font-size: 14px; font-family: 'Plus Jakarta Sans', sans-serif; }
+.trn-verify {
+  padding: 0 16px; background: var(--navy); color: #fff;
+  font-size: 12px; border: none; cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 500;
+  white-space: nowrap; transition: background .2s;
+}
+.trn-verify:hover { background: var(--navy-mid); }
+
+.verified-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px; background: var(--success-bg);
+  border: 1px solid #b8ddb8;
+  font-size: 12px; color: var(--success); margin-top: 8px;
+}
+
+.upload-zone {
+  border: 2px dashed var(--border); padding: 32px;
+  text-align: center; cursor: pointer; transition: all .2s;
+  background: var(--bg);
+}
+.upload-zone:hover { border-color: var(--navy); background: var(--white); }
+.upload-icon { font-size: 28px; margin-bottom: 10px; }
+.upload-text { font-size: 13.5px; color: var(--muted); }
+.upload-text strong { color: var(--navy); }
+
+.freezone-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+}
+.fz-option {
+  padding: 10px 12px; border: 1.5px solid var(--border);
+  text-align: center; font-size: 12px; cursor: pointer;
+  color: var(--muted); transition: all .2s;
+}
+.fz-option:hover, .fz-option.selected {
+  border-color: var(--navy); color: var(--navy); background: var(--gold-pale);
+}
+
+.ob-actions {
+  display: flex; gap: 12px; align-items: center; margin-top: 40px; padding-top: 40px;
+  border-top: 1px solid var(--border);
+}
+.btn-next {
+  padding: 13px 32px; background: var(--navy); color: #fff;
+  border: none; cursor: pointer; font-size: 14px; font-weight: 500;
+  font-family: 'Plus Jakarta Sans', sans-serif; transition: .2s;
+  display: flex; align-items: center; gap: 8px;
+}
+.btn-next:hover { background: var(--navy-mid); }
+.btn-back {
+  padding: 13px 24px; background: transparent; color: var(--muted);
+  border: 1.5px solid var(--border); cursor: pointer; font-size: 14px;
+  font-family: 'Plus Jakarta Sans', sans-serif; transition: .2s;
+}
+.btn-back:hover { border-color: var(--navy); color: var(--navy); }
+.ob-step-count {
+  margin-left: auto; font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--muted);
+}
+
+/* ══════════════════════════════════
+   APP LAYOUT (Dashboard + inner screens)
+══════════════════════════════════ */
+.app-layout {
+  display: flex; width: 100%; min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: var(--sidebar-w); flex-shrink: 0;
+  background: var(--navy); display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+}
+.sb-logo {
+  padding: 24px 20px; border-bottom: 1px solid rgba(255,255,255,.08);
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 600; color: #fff;
+  text-decoration: none;
+}
+.sb-logo-mark {
+  width: 30px; height: 30px; background: var(--gold); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+.sb-logo-mark span { font-family: 'Cormorant Garamond', serif; font-size: 13px; font-weight: 600; color: var(--navy); }
+
+.sb-nav { flex: 1; padding: 20px 0; }
+.sb-section-label {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.25);
+  padding: 8px 20px; margin-top: 16px;
+}
+.sb-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 20px; font-size: 13.5px; color: rgba(255,255,255,.5);
+  cursor: pointer; transition: all .2s; border-left: 2px solid transparent;
+}
+.sb-item:hover { color: rgba(255,255,255,.85); background: rgba(255,255,255,.04); }
+.sb-item.active {
+  color: #fff; background: rgba(255,255,255,.07);
+  border-left-color: var(--gold);
+}
+.sb-item svg { flex-shrink: 0; }
+.sb-badge {
+  margin-left: auto; padding: 2px 8px;
+  background: var(--gold); color: var(--navy);
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500;
+}
+
+.sb-bottom { padding: 20px; border-top: 1px solid rgba(255,255,255,.08); }
+.sb-user {
+  display: flex; align-items: center; gap: 10px;
+}
+.sb-avatar {
+  width: 32px; height: 32px; background: var(--navy-light);
+  border: 1.5px solid rgba(255,255,255,.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: #fff; font-weight: 500; border-radius: 50%;
+}
+.sb-user-info {}
+.sb-user-name { font-size: 13px; color: #fff; font-weight: 400; }
+.sb-user-role { font-size: 11px; color: rgba(255,255,255,.35); }
+
+/* Main area */
+.main-area { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+.topbar {
+  height: 60px; background: var(--white); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px; position: sticky; top: 0; z-index: 10; flex-shrink: 0;
+}
+.topbar-left { display: flex; flex-direction: column; }
+.topbar-title { font-size: 15px; font-weight: 500; color: var(--navy); }
+.topbar-breadcrumb {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--muted); letter-spacing: .06em;
+}
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.topbar-btn {
+  padding: 8px 18px; font-size: 13px; font-weight: 500;
+  background: var(--navy); color: #fff; border: none;
+  cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
+  display: flex; align-items: center; gap: 6px; transition: .2s;
+}
+.topbar-btn:hover { background: var(--navy-mid); }
+.topbar-notif {
+  width: 34px; height: 34px; border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; position: relative;
+}
+.notif-dot {
+  width: 7px; height: 7px; background: var(--gold); border-radius: 50%;
+  position: absolute; top: 6px; right: 6px;
+}
+
+.page-content { flex: 1; padding: 32px; overflow-y: auto; }
+
+/* ── DASHBOARD ── */
+.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+.kpi {
+  background: var(--white); border: 1px solid var(--border);
+  padding: 20px 22px;
+}
+.kpi-label {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
+}
+.kpi-value {
+  font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 300;
+  color: var(--navy); line-height: 1; margin-bottom: 6px;
+}
+.kpi-delta {
+  font-size: 12px; display: flex; align-items: center; gap: 4px;
+}
+.kpi-delta.up { color: var(--success); }
+.kpi-delta.warn { color: #c07a10; }
+
+.dash-grid { display: grid; grid-template-columns: 1fr 380px; gap: 20px; }
+
+.card {
+  background: var(--white); border: 1px solid var(--border); padding: 24px;
+}
+.card-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border-light);
+}
+.card-title {
+  font-size: 14px; font-weight: 500; color: var(--navy);
+}
+.card-action {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  color: var(--gold); cursor: pointer; letter-spacing: .06em;
+}
+
+/* Invoice table */
+.inv-list { width: 100%; border-collapse: collapse; }
+.inv-list th {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+  padding: 0 12px 10px 0; text-align: left; font-weight: 400;
+  border-bottom: 1px solid var(--border);
+}
+.inv-list td {
+  padding: 13px 12px 13px 0; font-size: 13px; border-bottom: 1px solid var(--border-light);
+  vertical-align: middle;
+}
+.inv-list tr:last-child td { border-bottom: none; }
+.status-pill {
+  padding: 3px 10px; font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: .08em; display: inline-block;
+}
+.status-pill.cleared { background: var(--success-bg); color: var(--success); }
+.status-pill.pending { background: #fff8e8; color: #b07800; }
+.status-pill.draft { background: #f0f0f0; color: #888; }
+
+/* Compliance calendar */
+.cal-item {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 0; border-bottom: 1px solid var(--border-light);
+}
+.cal-item:last-child { border-bottom: none; }
+.cal-date {
+  width: 44px; flex-shrink: 0; text-align: center;
+  background: var(--navy); padding: 6px 4px;
+}
+.cal-date-d {
+  font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600;
+  color: var(--gold); line-height: 1; display: block;
+}
+.cal-date-m {
+  font-family: 'JetBrains Mono', monospace; font-size: 8px;
+  letter-spacing: .1em; color: rgba(255,255,255,.4); display: block; margin-top: 2px;
+}
+.cal-info {}
+.cal-title { font-size: 13.5px; font-weight: 400; color: var(--navy); margin-bottom: 3px; }
+.cal-sub { font-size: 12px; color: var(--muted); }
+.cal-urgent { color: #c07a10; font-weight: 500; }
+
+/* VAT summary */
+.vat-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border-light); }
+.vat-row:last-child { border-bottom: none; }
+.vat-key { font-size: 13.5px; color: var(--muted); }
+.vat-val { font-size: 13.5px; font-weight: 500; color: var(--navy); font-family: 'JetBrains Mono', monospace; }
+.vat-row.total .vat-key { font-weight: 600; color: var(--navy); font-size: 14px; }
+.vat-row.total .vat-val { color: var(--gold); font-size: 16px; }
+
+/* ── NEW INVOICE BUILDER ── */
+.inv-builder { display: grid; grid-template-columns: 1fr 340px; gap: 24px; }
+
+.inv-form-card { background: var(--white); border: 1px solid var(--border); padding: 32px; }
+.inv-section-title {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--muted);
+  margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+}
+.inv-section-title::before { content: ''; width: 3px; height: 12px; background: var(--gold); display: block; }
+
+.line-items { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+.line-items th {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+  padding: 0 8px 10px 0; text-align: left; font-weight: 400;
+}
+.line-items th:last-child { text-align: right; }
+.line-items td { padding: 8px 8px 8px 0; vertical-align: top; }
+.line-items td:last-child { text-align: right; vertical-align: middle; }
+.li-input {
+  width: 100%; padding: 8px 10px; font-size: 13px;
+  border: 1.5px solid var(--border); background: var(--bg);
+  font-family: 'Plus Jakarta Sans', sans-serif; outline: none;
+  transition: border-color .2s;
+}
+.li-input:focus { border-color: var(--navy); background: var(--white); }
+.li-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; transition: color .2s; }
+.li-del:hover { color: var(--error); }
+.add-line-btn {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; color: var(--gold); cursor: pointer;
+  background: none; border: 1.5px dashed var(--gold);
+  padding: 8px 16px; width: 100%; transition: .2s;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.add-line-btn:hover { background: var(--gold-pale); }
+
+/* Preview panel */
+.inv-preview-card {
+  background: var(--white); border: 1px solid var(--border);
+  padding: 28px; position: sticky; top: 92px;
+}
+.preview-label {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--muted);
+  margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;
+}
+.preview-live { color: var(--success); display: flex; align-items: center; gap: 5px; }
+.preview-live::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--success); }
+
+.preview-total-box {
+  background: var(--navy); padding: 20px; margin-bottom: 16px;
+}
+.preview-total-label {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.4);
+  margin-bottom: 6px;
+}
+.preview-total-amount {
+  font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300;
+  color: var(--gold); line-height: 1;
+}
+.preview-breakdown { margin-bottom: 16px; }
+.pb-row { display: flex; justify-content: space-between; padding: 7px 0; font-size: 12.5px; border-bottom: 1px solid var(--border-light); color: var(--muted); }
+.pb-row:last-child { border-bottom: none; }
+.pb-row.bold { color: var(--navy); font-weight: 500; }
+
+.xml-preview {
+  background: var(--navy); padding: 16px; margin-top: 16px;
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: rgba(255,255,255,.5); line-height: 1.8; overflow: hidden;
+  max-height: 140px;
+}
+.xml-preview .xk { color: #7ec8e3; }
+.xml-preview .xv { color: #c8e88a; }
+.xml-preview .xa { color: var(--gold); }
+
+.generate-btn {
+  width: 100%; padding: 14px; background: var(--gold); color: var(--navy);
+  border: none; cursor: pointer; font-size: 14px; font-weight: 600;
+  font-family: 'Plus Jakarta Sans', sans-serif; margin-top: 16px;
+  transition: .2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.generate-btn:hover { background: var(--gold-light); }
+
+/* ── INVOICE OUTPUT ── */
+.invoice-output-layout {
+  display: grid; grid-template-columns: 1fr 300px; gap: 24px;
+}
+
+.invoice-doc {
+  background: var(--white); border: 1px solid var(--border);
+  padding: 52px; max-width: 800px;
+}
+
+.inv-doc-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 40px; padding-bottom: 32px;
+  border-bottom: 3px solid var(--navy);
+}
+.inv-doc-co { }
+.inv-doc-name {
+  font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600;
+  color: var(--navy); margin-bottom: 6px;
+}
+.inv-doc-details { font-size: 12px; color: var(--muted); line-height: 1.8; }
+.inv-doc-badge-wrap { text-align: right; }
+.inv-doc-cleared {
+  display: inline-block; padding: 6px 14px;
+  background: var(--success-bg); border: 1px solid #b8ddb8;
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--success); letter-spacing: .1em; margin-bottom: 10px;
+}
+.inv-doc-num {
+  font-family: 'JetBrains Mono', monospace; font-size: 22px;
+  font-weight: 400; color: var(--navy);
+}
+.inv-doc-date { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+.inv-parties {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 36px;
+}
+.party-label {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--muted);
+  margin-bottom: 8px;
+}
+.party-name { font-size: 15px; font-weight: 500; color: var(--navy); margin-bottom: 4px; }
+.party-detail { font-size: 12.5px; color: var(--muted); line-height: 1.7; }
+
+.inv-doc-table { width: 100%; border-collapse: collapse; margin-bottom: 28px; }
+.inv-doc-table thead { background: var(--navy); }
+.inv-doc-table th {
+  padding: 11px 14px; font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,255,255,.6); text-align: left; font-weight: 400;
+}
+.inv-doc-table th:last-child { text-align: right; }
+.inv-doc-table td {
+  padding: 13px 14px; font-size: 13px;
+  border-bottom: 1px solid var(--border-light);
+}
+.inv-doc-table td:last-child { text-align: right; font-family: 'JetBrains Mono', monospace; }
+
+.inv-doc-totals {
+  display: flex; justify-content: flex-end; margin-bottom: 36px;
+}
+.totals-box { width: 280px; }
+.tot-row {
+  display: flex; justify-content: space-between;
+  padding: 9px 0; font-size: 13px; border-bottom: 1px solid var(--border-light);
+  color: var(--muted);
+}
+.tot-row.grand {
+  font-size: 17px; font-weight: 600; color: var(--navy);
+  border-bottom: none; border-top: 2px solid var(--navy); margin-top: 4px; padding-top: 14px;
+}
+.tot-row.grand span:last-child { color: var(--gold); }
+
+.inv-doc-footer {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  padding-top: 28px; border-top: 1px solid var(--border);
+}
+.inv-crypto {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--muted); line-height: 2;
+}
+.inv-crypto strong { color: var(--navy); }
+.qr-block {
+  width: 64px; height: 64px; background: var(--navy);
+  display: grid; grid-template-columns: repeat(8, 1fr); gap: 1.5px; padding: 8px;
+}
+.qb { background: rgba(255,255,255,.15); }
+.qb.d { background: #fff; }
+
+/* Right actions panel */
+.inv-actions-panel { display: flex; flex-direction: column; gap: 14px; }
+.action-card {
+  background: var(--white); border: 1px solid var(--border); padding: 22px;
+}
+.action-card-title { font-size: 13.5px; font-weight: 500; color: var(--navy); margin-bottom: 14px; }
+.action-btn {
+  width: 100%; padding: 11px; font-size: 13px; font-weight: 500;
+  cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
+  display: flex; align-items: center; gap: 8px; justify-content: center;
+  margin-bottom: 8px; transition: .2s; border: none;
+}
+.action-btn:last-child { margin-bottom: 0; }
+.action-btn.primary { background: var(--navy); color: #fff; }
+.action-btn.primary:hover { background: var(--navy-mid); }
+.action-btn.gold { background: var(--gold); color: var(--navy); }
+.action-btn.gold:hover { background: var(--gold-light); }
+.action-btn.outline { background: transparent; color: var(--navy); border: 1.5px solid var(--border); }
+.action-btn.outline:hover { border-color: var(--navy); }
+.action-btn.whatsapp { background: #25D366; color: #fff; }
+
+.fta-status-card {
+  background: var(--navy); padding: 22px;
+}
+.fta-status-label {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px;
+  letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.4);
+  margin-bottom: 12px;
+}
+.fta-cleared {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+}
+.fta-icon {
+  width: 36px; height: 36px; background: var(--success-bg); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;
+}
+.fta-text { font-size: 14px; font-weight: 500; color: #fff; }
+.fta-sub { font-size: 11px; color: rgba(255,255,255,.4); }
+.fta-meta {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: rgba(255,255,255,.3); line-height: 2;
+}
+.fta-meta span { color: var(--gold); }
+
+/* Screen toggle tabs (demo nav) */
+.screen-nav {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  z-index: 1000; display: flex; gap: 0;
+  background: var(--navy); border: 1px solid var(--navy-light);
+  box-shadow: 0 8px 32px rgba(0,0,0,.3);
+}
+.sn-btn {
+  padding: 10px 18px; font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: .08em; color: rgba(255,255,255,.45);
+  background: none; border: none; border-right: 1px solid rgba(255,255,255,.1);
+  cursor: pointer; transition: .2s; white-space: nowrap;
+}
+.sn-btn:last-child { border-right: none; }
+.sn-btn:hover { color: rgba(255,255,255,.8); background: rgba(255,255,255,.06); }
+.sn-btn.active { color: var(--gold); background: rgba(200,160,64,.1); }
+
+/* Misc utilities */
+.tag {
+  display: inline-block; padding: 3px 10px;
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .08em;
+}
+.tag.gold { background: var(--gold-pale); color: var(--gold); border: 1px solid rgba(200,160,64,.3); }
+
+/* Step 3 specific */
+.catalog-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px; border: 1.5px solid var(--border);
+  background: var(--white); margin-bottom: 10px;
+  cursor: pointer; transition: .2s;
+}
+.catalog-item:hover { border-color: var(--navy); }
+.catalog-item.selected { border-color: var(--gold); background: var(--gold-pale); }
+.ci-num {
+  width: 28px; height: 28px; background: var(--navy-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: rgba(255,255,255,.6); flex-shrink: 0;
+}
+.catalog-item.selected .ci-num { background: var(--gold); color: var(--navy); }
+.ci-info { flex: 1; }
+.ci-name { font-size: 14px; font-weight: 400; color: var(--navy); }
+.ci-price { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; margin-top: 2px; }
+
+@media(max-width:900px){
+  .onboard-layout { grid-template-columns: 1fr; }
+  .onboard-left { display: none; }
+  .onboard-right { padding: 32px 24px; }
+  .kpi-row { grid-template-columns: 1fr 1fr; }
+  .dash-grid { grid-template-columns: 1fr; }
+  .inv-builder { grid-template-columns: 1fr; }
+  .invoice-output-layout { grid-template-columns: 1fr; }
+  .screen-nav { left: 16px; right: 16px; transform: none; flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ SCREEN: ONBOARD 1 ══════════════════ -->
+<div class="screen active" id="s-ob1">
+<div class="onboard-layout">
+  <div class="onboard-left">
+    <a href="#" class="ob-logo">
+      <div class="ob-logo-mark"><span>ف</span></div>
+      FatooraReady
+    </a>
+    <div class="ob-steps">
+      <div class="ob-step active" onclick="goto('s-ob1')">
+        <div class="ob-step-dot">1</div>
+        <div class="ob-step-info">
+          <div class="ob-step-label">Step 1 of 3</div>
+          <div class="ob-step-name">Company Profile</div>
+        </div>
+      </div>
+      <div class="ob-step" onclick="goto('s-ob2')">
+        <div class="ob-step-dot">2</div>
+        <div class="ob-step-info">
+          <div class="ob-step-label">Step 2 of 3</div>
+          <div class="ob-step-name">VAT & Trade License</div>
+        </div>
+      </div>
+      <div class="ob-step" onclick="goto('s-ob3')">
+        <div class="ob-step-dot">3</div>
+        <div class="ob-step-info">
+          <div class="ob-step-label">Step 3 of 3</div>
+          <div class="ob-step-name">Products & Services</div>
+        </div>
+      </div>
+    </div>
+    <div class="ob-left-footer">
+      Your data is stored on encrypted UAE servers.<br>
+      <strong>FTA-aligned · PEPPOL UBL 2.1</strong>
+    </div>
+  </div>
+
+  <div class="onboard-right">
+    <div class="ob-progress"><div class="ob-progress-fill" style="width:33%"></div></div>
+    <div class="ob-eyebrow">Company Profile</div>
+    <div class="ob-title">Tell us about<br>your business.</div>
+    <div class="ob-sub">This information will appear on every invoice you issue and must match your FTA records exactly.</div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Company Name (English) <span class="req">*</span></label>
+        <input class="form-input" type="text" placeholder="e.g. Al Rashid Trading LLC" value="Al Rashid Trading LLC">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Company Name (Arabic)</label>
+        <input class="form-input" type="text" placeholder="الاسم بالعربية" value="شركة الراشد للتجارة" style="font-family: inherit; direction: rtl; text-align: right;">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Legal Entity Type <span class="req">*</span></label>
+      <select class="form-select">
+        <option>Limited Liability Company (LLC)</option>
+        <option>Free Zone Establishment (FZE)</option>
+        <option>Free Zone Company (FZCO)</option>
+        <option>Branch of Foreign Company</option>
+        <option>Sole Establishment</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Free Zone / Jurisdiction <span class="req">*</span></label>
+      <div class="freezone-grid">
+        <div class="fz-option selected">DMCC</div>
+        <div class="fz-option">DIFC</div>
+        <div class="fz-option">JAFZA</div>
+        <div class="fz-option">ADGM</div>
+        <div class="fz-option">DAFZA</div>
+        <div class="fz-option">Mainland DED</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Registered Address <span class="req">*</span></label>
+      <input class="form-input" type="text" placeholder="Unit / Floor, Building, Area, Emirate" value="Unit 2104, Almas Tower, JLT, Dubai">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Phone Number</label>
+        <input class="form-input" type="text" placeholder="+971 4 XXX XXXX" value="+971 4 456 7890">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Business Email <span class="req">*</span></label>
+        <input class="form-input valid" type="email" value="accounts@alrashidtrading.ae">
+      </div>
+    </div>
+
+    <div class="ob-actions">
+      <button class="btn-next" onclick="goto('s-ob2')">Continue <span>→</span></button>
+      <div class="ob-step-count">1 / 3</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════ SCREEN: ONBOARD 2 ══════════════════ -->
+<div class="screen" id="s-ob2">
+<div class="onboard-layout">
+  <div class="onboard-left">
+    <a href="#" class="ob-logo">
+      <div class="ob-logo-mark"><span>ف</span></div>
+      FatooraReady
+    </a>
+    <div class="ob-steps">
+      <div class="ob-step done" onclick="goto('s-ob1')">
+        <div class="ob-step-dot">✓</div>
+        <div class="ob-step-info">
+          <div class="ob-step-label">Completed</div>
+          <div class="ob-step-name">Company Profile</div>
+        </div>
+      </div>
+      <div class="ob-step active">
+        <div class="ob-step-dot">2</div>
+        <div class="ob-step-info">
+          <div class="ob-step-label">Step 2 of 3</div>
+          <div class="ob-step-name">VAT & Trade License</div>
+        </div>
+      </div>
+      <div class="ob-step">
+        <div class="ob-step-dot">3</div>
+        <div class="ob-step-info">
+          <div class="ob-step-label">Step 3 of 3</div>
+          <div class="ob-step-name">Products & Services</div>
+        </div>
+      </div>
+    </div>
+    <div class="ob-left-footer">
+      Your TRN is validated directly with the<br>
+      <strong>UAE Federal Tax Authority (EmaraTax)</strong>
+    </div>
+  </div>
+
+  <div class="onboard-right">
+    <div class="ob-progress"><div class="ob-progress-fill" style="width:66%"></div></div>
+    <div class="ob-eyebrow">VAT & Licensing</div>
+    <div class="ob-title">Your tax and<br>license details.</div>
+    <div class="ob-sub">We validate your TRN live with EmaraTax so your invoices are always issued with a verified tax registration number.</div>
+
+    <div class="form-group">
+      <label class="form-label">Tax Registration Number (TRN) <span class="req">*</span></label>
+      <div class="trn-row">
+        <div class="trn-prefix">UAE —</div>
+        <input type="text" value="100345678900003" maxlength="15" placeholder="15-digit TRN">
+        <button class="trn-verify">Verify with EmaraTax</button>
+      </div>
+      <div class="verified-badge">✓ Verified — Al Rashid Trading LLC · Active VAT registrant</div>
+      <div class="form-hint">Your TRN must be exactly 15 digits and match your EmaraTax registration.</div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">VAT Filing Frequency <span class="req">*</span></label>
+        <select class="form-select">
+          <option>Quarterly (Jan–Mar, Apr–Jun…)</option>
+          <option>Monthly</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Default Currency</label>
+        <select class="form-select">
+          <option>AED — UAE Dirham</option>
+          <option>USD — US Dollar</option>
+          <option>EUR — Euro</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Trade License Number <span class="req">*</span></label>
+      <input class="form-input" type="text" value="DMCC-0123456" placeholder="e.g. DMCC-XXXXXXX">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Trade License Issue Date</label>
+        <input class="form-input" type="text" value="15 Jan 2023">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Trade License Expiry</label>
+        <input class="form-input" type="text" value="14 Jan 2027" style="border-color: #c8a040">
+        <div class="form-hint" style="color: #b07800">⚠ Renewal due in 9 months — we'll remind you 90 days before.</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Trade License Document</label>
+      <div class="upload-zone">
+        <div class="upload-icon">📄</div>
+        <div class="upload-text"><strong>Upload trade license PDF</strong><br>Drag & drop or click to select · Max 10MB</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Invoice Prefix / Series</label>
+      <input class="form-input" type="text" value="INV-2026-" placeholder="e.g. INV-2026-">
+      <div class="form-hint">Invoices will be numbered INV-2026-00001, INV-2026-00002, etc. The sequence is tamper-proof once issued.</div>
+    </div>
+
+    <div class="ob-actions">
+      <button class="btn-back" onclick="goto('s-ob1')">← Back</button>
+      <button class="btn-next" onclick="goto('s-ob3')">Continue <span>→</span></button>
+      <div class="ob-step-count">2 / 3</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════ SCREEN: ONBOARD 3 ══════════════════ -->
+<div class="screen" id="s-ob3">
+<div class="onboard-layout">
+  <div class="onboard-left">
+    <a href="#" class="ob-logo">
+      <div class="ob-logo-mark"><span>ف</span></div>
+      FatooraReady
+    </a>
+    <div class="ob-steps">
+      <div class="ob-step done" onclick="goto('s-ob1')">
+        <div class="ob-step-dot">✓</div>
+        <div class="ob-step-info">
+          <div class="ob-step-label">Completed</div>
+          <div class="ob-step-name">Company Profile</div>
+        </div>
+      </div>
+      <div class="ob-step done" onclick="goto('s-ob2')">
+        <div class="ob-step-dot">✓</div>
+        <div class="ob-step-info">
+          <div class="ob-step-label">Completed</div>
+          <div class="ob-step-name">VAT & Trade License</div>
+        </div>
+      </div>
+      <div class="ob-step active">
+        <div class="ob-step-dot">3</div>
+        <div class="ob-step-info">
+          <div class="ob-step-label">Step 3 of 3</div>
+          <div class="ob-step-name">Products & Services</div>
+        </div>
+      </div>
+    </div>
+    <div class="ob-left-footer">
+      Your catalog is reusable across every invoice.<br>
+      <strong>Add more anytime from your dashboard.</strong>
+    </div>
+  </div>
+
+  <div class="onboard-right">
+    <div class="ob-progress"><div class="ob-progress-fill" style="width:100%"></div></div>
+    <div class="ob-eyebrow">Products & Services</div>
+    <div class="ob-title">What do you<br>invoice for?</div>
+    <div class="ob-sub">Build your catalog once. Pick items when creating any invoice. Prices and VAT rates are saved automatically.</div>
+
+    <div class="form-group">
+      <label class="form-label">Add your first product or service</label>
+      <div class="form-row">
+        <input class="form-input" type="text" placeholder="Description" value="IT Consulting Services">
+        <input class="form-input" type="text" placeholder="Unit Price (AED)" value="1,200">
+      </div>
+    </div>
+    <div class="form-row" style="margin-bottom:20px">
+      <div>
+        <label class="form-label">VAT Rate</label>
+        <select class="form-select">
+          <option>5% — Standard Rate</option>
+          <option>0% — Zero Rated</option>
+          <option>Exempt</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Unit of Measure</label>
+        <select class="form-select">
+          <option>Hour</option>
+          <option>Day</option>
+          <option>Unit</option>
+          <option>Month</option>
+          <option>Project</option>
+        </select>
+      </div>
+    </div>
+    <button style="display:flex;align-items:center;gap:6px;padding:10px 18px;background:var(--navy);color:#fff;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;margin-bottom:28px;">+ Add to Catalog</button>
+
+    <label class="form-label" style="margin-bottom:14px;">Your catalog (3 items)</label>
+    <div class="catalog-item selected">
+      <div class="ci-num">1</div>
+      <div class="ci-info">
+        <div class="ci-name">IT Consulting Services</div>
+        <div class="ci-price">AED 1,200 / hour · 5% VAT</div>
+      </div>
+    </div>
+    <div class="catalog-item selected">
+      <div class="ci-num">2</div>
+      <div class="ci-info">
+        <div class="ci-name">Software License (Annual)</div>
+        <div class="ci-price">AED 800 / unit · 5% VAT</div>
+      </div>
+    </div>
+    <div class="catalog-item">
+      <div class="ci-num">3</div>
+      <div class="ci-info">
+        <div class="ci-name">Project Management Retainer</div>
+        <div class="ci-price">AED 5,000 / month · 5% VAT</div>
+      </div>
+    </div>
+
+    <div class="ob-actions">
+      <button class="btn-back" onclick="goto('s-ob2')">← Back</button>
+      <button class="btn-next" onclick="goto('s-dashboard')" style="background:var(--gold);color:var(--navy)">Launch Dashboard →</button>
+      <div class="ob-step-count">3 / 3</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════ SCREEN: DASHBOARD ══════════════════ -->
+<div class="screen" id="s-dashboard">
+<div class="app-layout">
+  <div class="sidebar">
+    <a href="#" class="sb-logo"><div class="sb-logo-mark"><span>ف</span></div>FatooraReady</a>
+    <div class="sb-nav">
+      <div class="sb-section-label">Main</div>
+      <div class="sb-item active" onclick="goto('s-dashboard')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div>
+      <div class="sb-item" onclick="goto('s-newinv')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        New Invoice
+      </div>
+      <div class="sb-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        All Invoices
+        <span class="sb-badge">42</span>
+      </div>
+      <div class="sb-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        Buyers
+      </div>
+      <div class="sb-section-label">Compliance</div>
+      <div class="sb-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        VAT Dashboard
+      </div>
+      <div class="sb-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Deadlines
+        <span class="sb-badge">3</span>
+      </div>
+      <div class="sb-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Catalog
+      </div>
+      <div class="sb-section-label">Settings</div>
+      <div class="sb-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </div>
+    </div>
+    <div class="sb-bottom">
+      <div class="sb-user">
+        <div class="sb-avatar">AR</div>
+        <div class="sb-user-info">
+          <div class="sb-user-name">Al Rashid Trading</div>
+          <div class="sb-user-role">Business Plan</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-area">
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title">Dashboard</div>
+        <div class="topbar-breadcrumb">AL RASHID TRADING LLC · DMCC · TRN 100345678900003</div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-notif"><div class="notif-dot"></div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+        <button class="topbar-btn" onclick="goto('s-newinv')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Invoice
+        </button>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <div class="kpi-row">
+        <div class="kpi">
+          <div class="kpi-label">This Month — Issued</div>
+          <div class="kpi-value">AED 187K</div>
+          <div class="kpi-delta up">↑ 23% vs last month</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Invoices Cleared (FTA)</div>
+          <div class="kpi-value">42</div>
+          <div class="kpi-delta up">↑ 8 this week</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">VAT Owed (Q1)</div>
+          <div class="kpi-value">AED 9,350</div>
+          <div class="kpi-delta warn">⚑ Due 28 Apr</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Awaiting Payment</div>
+          <div class="kpi-value">AED 44K</div>
+          <div class="kpi-delta warn">3 overdue</div>
+        </div>
+      </div>
+
+      <div class="dash-grid">
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Recent Invoices</div>
+              <div class="card-action">View all →</div>
+            </div>
+            <table class="inv-list">
+              <thead>
+                <tr>
+                  <th>Invoice</th>
+                  <th>Buyer</th>
+                  <th>Date</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-family:'JetBrains Mono',monospace;font-size:12px">INV-2026-00142</td>
+                  <td>Emirates Tech FZE</td>
+                  <td style="color:var(--muted)">09 Mar 2026</td>
+                  <td style="font-family:'JetBrains Mono',monospace;font-size:12px">AED 15,120</td>
+                  <td><span class="status-pill cleared">FTA CLEARED</span></td>
+                </tr>
+                <tr>
+                  <td style="font-family:'JetBrains Mono',monospace;font-size:12px">INV-2026-00141</td>
+                  <td>Gulf Ventures LLC</td>
+                  <td style="color:var(--muted)">07 Mar 2026</td>
+                  <td style="font-family:'JetBrains Mono',monospace;font-size:12px">AED 42,000</td>
+                  <td><span class="status-pill cleared">FTA CLEARED</span></td>
+                </tr>
+                <tr>
+                  <td style="font-family:'JetBrains Mono',monospace;font-size:12px">INV-2026-00140</td>
+                  <td>Dubai Properties</td>
+                  <td style="color:var(--muted)">04 Mar 2026</td>
+                  <td style="font-family:'JetBrains Mono',monospace;font-size:12px">AED 8,400</td>
+                  <td><span class="status-pill pending">PENDING PAY</span></td>
+                </tr>
+                <tr>
+                  <td style="font-family:'JetBrains Mono',monospace;font-size:12px">INV-2026-00139</td>
+                  <td>Sharjah Logistics Co.</td>
+                  <td style="color:var(--muted)">01 Mar 2026</td>
+                  <td style="font-family:'JetBrains Mono',monospace;font-size:12px">AED 22,500</td>
+                  <td><span class="status-pill cleared">FTA CLEARED</span></td>
+                </tr>
+                <tr>
+                  <td style="font-family:'JetBrains Mono',monospace;font-size:12px">INV-2026-00138</td>
+                  <td>MAS Group FZCO</td>
+                  <td style="color:var(--muted)">27 Feb 2026</td>
+                  <td style="font-family:'JetBrains Mono',monospace;font-size:12px">AED 6,300</td>
+                  <td><span class="status-pill draft">DRAFT</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Compliance Calendar</div>
+              <div class="card-action">All →</div>
+            </div>
+            <div class="cal-item">
+              <div class="cal-date"><span class="cal-date-d">28</span><span class="cal-date-m">APR</span></div>
+              <div class="cal-info">
+                <div class="cal-title cal-urgent">⚑ Q1 VAT Return Due</div>
+                <div class="cal-sub">AED 9,350 output VAT · 50 days away</div>
+              </div>
+            </div>
+            <div class="cal-item">
+              <div class="cal-date"><span class="cal-date-d">14</span><span class="cal-date-m">JAN</span></div>
+              <div class="cal-info">
+                <div class="cal-title">Trade License Renewal</div>
+                <div class="cal-sub">DMCC · 310 days remaining</div>
+              </div>
+            </div>
+            <div class="cal-item">
+              <div class="cal-date"><span class="cal-date-d">30</span><span class="cal-date-m">JUN</span></div>
+              <div class="cal-info">
+                <div class="cal-title">Q2 VAT Return Due</div>
+                <div class="cal-sub">Estimated filing window</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Q1 VAT Summary</div>
+              <div class="card-action" style="font-size:11px">Export →</div>
+            </div>
+            <div class="vat-row"><div class="vat-key">Output VAT (sales)</div><div class="vat-val">AED 9,350</div></div>
+            <div class="vat-row"><div class="vat-key">Input VAT (purchases)</div><div class="vat-val">AED 1,240</div></div>
+            <div class="vat-row total"><div class="vat-key">Net VAT Payable</div><div class="vat-val">AED 8,110</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════ SCREEN: NEW INVOICE ══════════════════ -->
+<div class="screen" id="s-newinv">
+<div class="app-layout">
+  <div class="sidebar">
+    <a href="#" class="sb-logo"><div class="sb-logo-mark"><span>ف</span></div>FatooraReady</a>
+    <div class="sb-nav">
+      <div class="sb-section-label">Main</div>
+      <div class="sb-item" onclick="goto('s-dashboard')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div>
+      <div class="sb-item active">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        New Invoice
+      </div>
+      <div class="sb-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        All Invoices
+        <span class="sb-badge">42</span>
+      </div>
+      <div class="sb-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Buyers</div>
+      <div class="sb-section-label">Compliance</div>
+      <div class="sb-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>VAT Dashboard</div>
+      <div class="sb-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Deadlines<span class="sb-badge">3</span></div>
+      <div class="sb-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>Catalog</div>
+    </div>
+    <div class="sb-bottom">
+      <div class="sb-user">
+        <div class="sb-avatar">AR</div>
+        <div class="sb-user-info"><div class="sb-user-name">Al Rashid Trading</div><div class="sb-user-role">Business Plan</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-area">
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title">New Invoice</div>
+        <div class="topbar-breadcrumb">INVOICES → NEW · AUTO-SAVED AS DRAFT</div>
+      </div>
+      <div class="topbar-right">
+        <button class="btn-back" style="font-size:13px;padding:8px 18px" onclick="goto('s-dashboard')">← Back</button>
+        <button class="topbar-btn" onclick="goto('s-output')">Generate & Submit →</button>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <div class="inv-builder">
+        <div>
+          <div class="inv-form-card" style="margin-bottom:16px">
+            <div class="inv-section-title">Invoice Details</div>
+            <div class="form-row" style="margin-bottom:16px">
+              <div class="form-group" style="margin-bottom:0">
+                <label class="form-label">Invoice Type</label>
+                <select class="form-select">
+                  <option>Tax Invoice (Standard)</option>
+                  <option>Simplified Tax Invoice</option>
+                  <option>Credit Note</option>
+                  <option>Debit Note</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label class="form-label">Invoice Date</label>
+                <input class="form-input" type="text" value="09 March 2026">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group" style="margin-bottom:0">
+                <label class="form-label">Supply Date</label>
+                <input class="form-input" type="text" value="09 March 2026">
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label class="form-label">Payment Due Date</label>
+                <input class="form-input" type="text" value="09 April 2026">
+              </div>
+            </div>
+          </div>
+
+          <div class="inv-form-card" style="margin-bottom:16px">
+            <div class="inv-section-title">Bill To (Buyer)</div>
+            <div class="form-row" style="margin-bottom:16px">
+              <div class="form-group" style="margin-bottom:0">
+                <label class="form-label">Buyer Name <span class="req">*</span></label>
+                <select class="form-select">
+                  <option>Emirates Tech FZE</option>
+                  <option>Gulf Ventures LLC</option>
+                  <option>Dubai Properties</option>
+                  <option>+ Add new buyer</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0">
+                <label class="form-label">Buyer TRN</label>
+                <input class="form-input" type="text" value="100456789000012" placeholder="Optional for B2B">
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">Buyer Address</label>
+              <input class="form-input" type="text" value="Office 501, Gate Building, DIFC, Dubai">
+            </div>
+          </div>
+
+          <div class="inv-form-card">
+            <div class="inv-section-title">Line Items</div>
+            <table class="line-items" style="width:100%">
+              <thead>
+                <tr>
+                  <th style="width:40%">Description</th>
+                  <th style="width:10%">Qty</th>
+                  <th style="width:18%">Unit Price</th>
+                  <th style="width:12%">VAT %</th>
+                  <th style="width:16%">Total (incl.)</th>
+                  <th style="width:4%"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input class="li-input" type="text" value="IT Consulting Services"></td>
+                  <td><input class="li-input" type="number" value="10" style="width:64px"></td>
+                  <td><input class="li-input" type="text" value="1,200"></td>
+                  <td><select class="li-input"><option>5%</option><option>0%</option><option>Exempt</option></select></td>
+                  <td style="font-family:'JetBrains Mono',monospace;font-size:12px;vertical-align:middle">AED 12,600</td>
+                  <td><button class="li-del">×</button></td>
+                </tr>
+                <tr>
+                  <td><input class="li-input" type="text" value="Software Licenses (Q1)"></td>
+                  <td><input class="li-input" type="number" value="3" style="width:64px"></td>
+                  <td><input class="li-input" type="text" value="800"></td>
+                  <td><select class="li-input"><option>5%</option><option>0%</option></select></td>
+                  <td style="font-family:'JetBrains Mono',monospace;font-size:12px;vertical-align:middle">AED 2,520</td>
+                  <td><button class="li-del">×</button></td>
+                </tr>
+              </tbody>
+            </table>
+            <button class="add-line-btn">+ Add Line Item</button>
+
+            <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border)">
+              <div class="form-row">
+                <div class="form-group" style="margin-bottom:0">
+                  <label class="form-label">Notes (optional)</label>
+                  <textarea class="form-textarea" placeholder="Payment terms, bank details, references..." style="min-height:60px">30-day payment terms. Transfer to ENBD account ending 4521. Reference: PROJECT-2026-012</textarea>
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label class="form-label">Payment Method</label>
+                  <select class="form-select" style="margin-bottom:10px">
+                    <option>Bank Transfer</option>
+                    <option>Cheque</option>
+                    <option>Cash</option>
+                  </select>
+                  <label class="form-label">Currency</label>
+                  <select class="form-select">
+                    <option>AED — UAE Dirham</option>
+                    <option>USD — US Dollar</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LIVE PREVIEW -->
+        <div>
+          <div class="inv-preview-card">
+            <div class="preview-label">
+              Live Preview
+              <span class="preview-live">Auto-updating</span>
+            </div>
+            <div class="preview-total-box">
+              <div class="preview-total-label">Total Amount Due</div>
+              <div class="preview-total-amount">AED 15,120</div>
+            </div>
+            <div class="preview-breakdown">
+              <div class="pb-row"><span>IT Consulting (10h)</span><span>AED 12,000</span></div>
+              <div class="pb-row"><span>Software Licenses (×3)</span><span>AED 2,400</span></div>
+              <div class="pb-row"><span>Subtotal</span><span>AED 14,400</span></div>
+              <div class="pb-row bold"><span>VAT 5%</span><span>AED 720</span></div>
+              <div class="pb-row bold" style="font-size:14px;padding-top:10px;border-top:2px solid var(--navy);color:var(--navy)">
+                <span>Total</span><span style="color:var(--gold)">AED 15,120</span>
+              </div>
+            </div>
+
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:8px;letter-spacing:.1em">PEPPOL XML PREVIEW</div>
+            <div class="xml-preview">
+              <span class="xk">&lt;Invoice&gt;</span><br>
+              &nbsp;<span class="xk">&lt;ID&gt;</span><span class="xv">INV-2026-00143</span><span class="xk">&lt;/ID&gt;</span><br>
+              &nbsp;<span class="xk">&lt;UUID&gt;</span><span class="xv">550e8400-e29b…</span><span class="xk">&lt;/UUID&gt;</span><br>
+              &nbsp;<span class="xk">&lt;InvoiceTypeCode&gt;</span><span class="xv">388</span><span class="xk">&lt;/&gt;</span><br>
+              &nbsp;<span class="xk">&lt;TaxTotal&gt;</span><br>
+              &nbsp;&nbsp;<span class="xk">&lt;TaxAmount <span class="xa">currencyID="AED"</span>&gt;</span><span class="xv">720.00</span><span class="xk">&lt;/&gt;</span><br>
+              &nbsp;<span class="xk">&lt;/TaxTotal&gt;</span><br>
+              &nbsp;<span class="xk">&lt;LegalMonetaryTotal&gt;</span><br>
+              &nbsp;&nbsp;<span class="xk">&lt;PayableAmount&gt;</span><span class="xv">15120.00</span><span class="xk">&lt;/&gt;</span>
+            </div>
+
+            <button class="generate-btn" onclick="goto('s-output')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              Generate & Submit to FTA
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════ SCREEN: INVOICE OUTPUT ══════════════════ -->
+<div class="screen" id="s-output">
+<div class="app-layout">
+  <div class="sidebar">
+    <a href="#" class="sb-logo"><div class="sb-logo-mark"><span>ف</span></div>FatooraReady</a>
+    <div class="sb-nav">
+      <div class="sb-section-label">Main</div>
+      <div class="sb-item" onclick="goto('s-dashboard')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</div>
+      <div class="sb-item active"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Invoice #00143</div>
+      <div class="sb-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>All Invoices<span class="sb-badge">43</span></div>
+      <div class="sb-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Buyers</div>
+      <div class="sb-section-label">Compliance</div>
+      <div class="sb-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>VAT Dashboard</div>
+      <div class="sb-item"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Deadlines<span class="sb-badge">3</span></div>
+    </div>
+    <div class="sb-bottom">
+      <div class="sb-user"><div class="sb-avatar">AR</div><div class="sb-user-info"><div class="sb-user-name">Al Rashid Trading</div><div class="sb-user-role">Business Plan</div></div></div>
+    </div>
+  </div>
+
+  <div class="main-area">
+    <div class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title">Invoice INV-2026-00143 <span class="status-pill cleared" style="margin-left:10px;vertical-align:middle">FTA CLEARED ✓</span></div>
+        <div class="topbar-breadcrumb">INVOICES → INV-2026-00143 · EMIRATES TECH FZE</div>
+      </div>
+      <div class="topbar-right">
+        <button class="btn-back" style="font-size:13px;padding:8px 18px" onclick="goto('s-newinv')">← Edit</button>
+        <button class="btn-back" style="font-size:13px;padding:8px 18px" onclick="goto('s-dashboard')">Dashboard</button>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <div class="invoice-output-layout">
+
+        <!-- INVOICE DOCUMENT -->
+        <div class="invoice-doc">
+          <div class="inv-doc-header">
+            <div class="inv-doc-co">
+              <div class="inv-doc-name">Al Rashid Trading LLC</div>
+              <div class="inv-doc-details">
+                TRN: 100345678900003<br>
+                Unit 2104, Almas Tower, JLT, Dubai, UAE<br>
+                accounts@alrashidtrading.ae · +971 4 456 7890<br>
+                DMCC Registration: DMCC-0123456
+              </div>
+            </div>
+            <div class="inv-doc-badge-wrap">
+              <div><div class="inv-doc-cleared">✓ FTA CLEARED · PEPPOL UBL 2.1</div></div>
+              <div class="inv-doc-num">TAX INVOICE</div>
+              <div class="inv-doc-num" style="font-size:16px;color:var(--gold)">INV-2026-00143</div>
+              <div class="inv-doc-date">Issued: 09 March 2026 · Due: 09 April 2026</div>
+            </div>
+          </div>
+
+          <div class="inv-parties">
+            <div>
+              <div class="party-label">Billed To</div>
+              <div class="party-name">Emirates Tech FZE</div>
+              <div class="party-detail">
+                TRN: 100456789000012<br>
+                Office 501, Gate Building<br>
+                DIFC, Dubai, UAE
+              </div>
+            </div>
+            <div>
+              <div class="party-label">Payment Details</div>
+              <div class="party-name" style="font-size:14px">Bank Transfer (ENBD)</div>
+              <div class="party-detail">
+                Account: ···· ···· ···· 4521<br>
+                IBAN: AE07 0331 2345 6789 0123 456<br>
+                Reference: PROJECT-2026-012
+              </div>
+            </div>
+          </div>
+
+          <table class="inv-doc-table">
+            <thead>
+              <tr>
+                <th style="width:5%">#</th>
+                <th style="width:42%">Description</th>
+                <th style="width:10%">Qty</th>
+                <th style="width:15%">Unit Price</th>
+                <th style="width:12%">VAT 5%</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="color:var(--muted)">1</td>
+                <td>
+                  IT Consulting Services<br>
+                  <span style="font-size:11px;color:var(--muted)">Professional services per hour</span>
+                </td>
+                <td>10 hrs</td>
+                <td>AED 1,200</td>
+                <td>AED 600</td>
+                <td>AED 12,600</td>
+              </tr>
+              <tr>
+                <td style="color:var(--muted)">2</td>
+                <td>
+                  Software Licenses (Q1 2026)<br>
+                  <span style="font-size:11px;color:var(--muted)">Annual license per unit</span>
+                </td>
+                <td>3 units</td>
+                <td>AED 800</td>
+                <td>AED 120</td>
+                <td>AED 2,520</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="inv-doc-totals">
+            <div class="totals-box">
+              <div class="tot-row"><span>Subtotal</span><span>AED 14,400.00</span></div>
+              <div class="tot-row"><span>VAT (5%)</span><span>AED 720.00</span></div>
+              <div class="tot-row grand"><span>Total Due</span><span>AED 15,120.00</span></div>
+            </div>
+          </div>
+
+          <div style="padding:16px;background:var(--gold-pale);border:1px solid rgba(200,160,64,.2);margin-bottom:24px;font-size:13px;color:var(--muted);">
+            <strong style="color:var(--navy)">Payment Terms:</strong> 30-day payment terms. Transfer to ENBD account ending 4521. Reference: PROJECT-2026-012
+          </div>
+
+          <div class="inv-doc-footer">
+            <div class="inv-crypto">
+              <strong>INVOICE HASH</strong> (SHA-256)<br>
+              3a9f2c8b4d1e6f7a2b9c5d8e3f4a7b1c<br>
+              <strong>UUID</strong> 550e8400-e29b-41d4-a716-446655440001<br>
+              <strong>Cleared by FTA</strong> 09/03/2026 14:32:07 GST<br>
+              <strong>Signed</strong> Fatoora Production Certificate v1
+            </div>
+            <div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:6px;letter-spacing:.1em;text-align:center">SCAN QR TO VERIFY</div>
+              <div class="qr-block">
+                <div class="qb d"></div><div class="qb d"></div><div class="qb d"></div><div class="qb"></div><div class="qb d"></div><div class="qb"></div><div class="qb d"></div><div class="qb d"></div>
+                <div class="qb d"></div><div class="qb"></div><div class="qb d"></div><div class="qb d"></div><div class="qb"></div><div class="qb d"></div><div class="qb d"></div><div class="qb"></div>
+                <div class="qb d"></div><div class="qb d"></div><div class="qb"></div><div class="qb d"></div><div class="qb d"></div><div class="qb"></div><div class="qb d"></div><div class="qb d"></div>
+                <div class="qb"></div><div class="qb d"></div><div class="qb"></div><div class="qb"></div><div class="qb"></div><div class="qb d"></div><div class="qb"></div><div class="qb d"></div>
+                <div class="qb d"></div><div class="qb"></div><div class="qb d"></div><div class="qb d"></div><div class="qb d"></div><div class="qb"></div><div class="qb d"></div><div class="qb"></div>
+                <div class="qb d"></div><div class="qb d"></div><div class="qb"></div><div class="qb d"></div><div class="qb"></div><div class="qb d"></div><div class="qb d"></div><div class="qb d"></div>
+                <div class="qb d"></div><div class="qb"></div><div class="qb d"></div><div class="qb"></div><div class="qb d"></div><div class="qb d"></div><div class="qb d"></div><div class="qb"></div>
+                <div class="qb"></div><div class="qb d"></div><div class="qb d"></div><div class="qb d"></div><div class="qb"></div><div class="qb"></div><div class="qb d"></div><div class="qb d"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACTIONS PANEL -->
+        <div class="inv-actions-panel">
+          <div class="fta-status-card">
+            <div class="fta-status-label">FTA Clearance Status</div>
+            <div class="fta-cleared">
+              <div class="fta-icon">✓</div>
+              <div>
+                <div class="fta-text">Cleared</div>
+                <div class="fta-sub">09 Mar 2026, 14:32 GST</div>
+              </div>
+            </div>
+            <div class="fta-meta">
+              UUID: <span>550e8400-e29b…</span><br>
+              Hash: <span>3a9f2c8b4d1e…</span><br>
+              Certificate: <span>FTA Production v1</span>
+            </div>
+          </div>
+
+          <div class="action-card">
+            <div class="action-card-title">Send to Buyer</div>
+            <button class="action-btn gold">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Send by Email
+            </button>
+            <button class="action-btn whatsapp">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Send via WhatsApp
+            </button>
+            <button class="action-btn outline">Copy Buyer Portal Link</button>
+          </div>
+
+          <div class="action-card">
+            <div class="action-card-title">Download</div>
+            <button class="action-btn primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download PDF
+            </button>
+            <button class="action-btn outline">Download PEPPOL XML</button>
+            <button class="action-btn outline">Download UBL JSON</button>
+          </div>
+
+          <div class="action-card">
+            <div class="action-card-title">Invoice Details</div>
+            <div style="font-size:13px;color:var(--muted);line-height:2">
+              <div style="display:flex;justify-content:space-between"><span>Amount</span><span style="color:var(--navy);font-family:'JetBrains Mono',monospace;font-size:12px">AED 15,120</span></div>
+              <div style="display:flex;justify-content:space-between"><span>VAT</span><span style="color:var(--navy);font-family:'JetBrains Mono',monospace;font-size:12px">AED 720</span></div>
+              <div style="display:flex;justify-content:space-between"><span>Due date</span><span style="color:var(--navy)">09 Apr 2026</span></div>
+              <div style="display:flex;justify-content:space-between"><span>Status</span><span style="color:var(--success)">FTA Cleared</span></div>
+            </div>
+          </div>
+
+          <div class="action-card">
+            <div class="action-card-title">More Actions</div>
+            <button class="action-btn outline">Duplicate Invoice</button>
+            <button class="action-btn outline">Issue Credit Note</button>
+            <button class="action-btn outline" style="color:var(--error);border-color:rgba(192,57,43,.3)">Void Invoice</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SCREEN NAV (demo controls) -->
+<div class="screen-nav">
+  <button class="sn-btn active" onclick="goto('s-ob1')" id="n-ob1">1. Company</button>
+  <button class="sn-btn" onclick="goto('s-ob2')" id="n-ob2">2. VAT / License</button>
+  <button class="sn-btn" onclick="goto('s-ob3')" id="n-ob3">3. Catalog</button>
+  <button class="sn-btn" onclick="goto('s-dashboard')" id="n-dashboard">Dashboard</button>
+  <button class="sn-btn" onclick="goto('s-newinv')" id="n-newinv">New Invoice</button>
+  <button class="sn-btn" onclick="goto('s-output')" id="n-output">Invoice Output</button>
+</div>
+
+<script>
+const screens = ['s-ob1','s-ob2','s-ob3','s-dashboard','s-newinv','s-output'];
+const navIds  = ['n-ob1','n-ob2','n-ob3','n-dashboard','n-newinv','n-output'];
+
+function goto(id) {
+  screens.forEach(s => {
+    const el = document.getElementById(s);
+    if(el) el.classList.toggle('active', s === id);
+  });
+  navIds.forEach((n, i) => {
+    const el = document.getElementById(n);
+    if(el) el.classList.toggle('active', screens[i] === id);
+  });
+  window.scrollTo(0,0);
+}
+
+// Free zone option selector
+document.querySelectorAll('.fz-option').forEach(el => {
+  el.addEventListener('click', function() {
+    this.closest('.freezone-grid').querySelectorAll('.fz-option').forEach(x => x.classList.remove('selected'));
+    this.classList.add('selected');
+  });
+});
+
+// Catalog item selector
+document.querySelectorAll('.catalog-item').forEach(el => {
+  el.addEventListener('click', function() {
+    this.classList.toggle('selected');
+    const num = this.querySelector('.ci-num');
+    num.textContent = this.classList.contains('selected') ? '✓' : num.dataset.orig || num.textContent;
+  });
+});
+</script>
+</body>
+</html>
